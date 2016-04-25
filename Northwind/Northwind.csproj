@@ -143,6 +143,7 @@
     <Compile Include="Models\Employee.cs">
       <DependentUpon>NorthwindModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Gmailer.cs" />
     <Compile Include="Models\NorthwindModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
