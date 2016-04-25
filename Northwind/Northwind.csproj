@@ -134,6 +134,7 @@
       <DependentUpon>NorthwindModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerEdit.cs" />
+    <Compile Include="Models\CustomerRegister.cs" />
     <Compile Include="Models\CustomerSignIn.cs" />
     <Compile Include="Models\Discount.cs">
       <DependentUpon>NorthwindModel.tt</DependentUpon>
