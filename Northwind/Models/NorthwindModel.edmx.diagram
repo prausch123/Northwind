@@ -27,6 +27,7 @@
         <AssociationConnector Association="NORTHWNDModel.EmployeeTerritories" ManuallyRouted="false" />
         <EntityTypeShape EntityType="NORTHWNDModel.Discount" Width="1.5" PointX="7.625" PointY="8.125" />
         <AssociationConnector Association="NORTHWNDModel.FK_Specials_Products" />
+        <EntityTypeShape EntityType="NORTHWNDModel.PasswordRequest" Width="1.5" PointX="9.75" PointY="1.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -36,5 +36,6 @@ namespace Northwind.Models
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Territory> Territories { get; set; }
         public virtual DbSet<Discount> Discounts { get; set; }
+        public virtual DbSet<PasswordRequest> PasswordRequests { get; set; }
     }
 }

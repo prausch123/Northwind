@@ -163,6 +163,9 @@
     <Compile Include="Models\Order_Detail.cs">
       <DependentUpon>NorthwindModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PasswordRequest.cs">
+      <DependentUpon>NorthwindModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Product.cs">
       <DependentUpon>NorthwindModel.tt</DependentUpon>
     </Compile>
@@ -241,6 +244,7 @@
     <Content Include="Views\Home\SignedOut.cshtml" />
     <Content Include="Views\Customer\Orders.cshtml" />
     <Content Include="Views\Customer\Account.cshtml" />
+    <Content Include="Views\Customer\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

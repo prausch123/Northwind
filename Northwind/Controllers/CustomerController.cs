@@ -178,5 +178,11 @@ namespace Northwind.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Home");
             }
         }
+
+        public ActionResult ForgotPassword()
+        {
+            
+            return View();
+        }
     }
 }
