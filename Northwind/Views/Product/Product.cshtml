@@ -1,0 +1,47 @@
+﻿@using Northwind.Models
+@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "Product";
+}
+<div class="alert alert-success alert-dismissable fade in">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Your request produced @Model.Count() results</strong>
+</div>
+<table class="table table-hover table-responsive">
+    <thead>
+        <tr>
+            <th class="font-md">@ViewBag.Filter</th>
+            <th class="text-right font-md">Price</th>
+            <th class="text-right font-md">Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Product p in Model)
+        {
+            <tr class="product-row" id="@p.ProductID">
+                <td>@p.ProductName (@p.QuantityPerUnit)</td>
+                <td class="text-right">@string.Format("{0:c}", p.UnitPrice)</td>
+                <td class="text-right">@p.UnitsInStock</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="font-md">
+    <a href="~/Product/Category"><i class="fa fa-list"></i> Product Categories</a>
+</div>
+
+@section scripts
+{
+    <script>
+        $(function () {
+            $('.product-row').click(function () {
+                alert(this.id);
+            });
+            setTimeout(function () { $('.alert').fadeOut(); }, 3000);
+        });
+    </script>
+}
