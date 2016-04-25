@@ -190,10 +190,21 @@ namespace Northwind.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ForgotPassword([Bind(Include = "CustomerId")] CustomerPasswordForgotten customerPasswordForgotten, FormCollection Form, string ReturnUrl)
+        public ActionResult ForgotPassword(FormCollection Form, string ReturnUrl)
         {
+            using(NORTHWNDEntities db = new NORTHWNDEntities()){
+                // Fetch Customer By ID
+                Customer customer = db.Customers.Find(int.Parse(Form["CustomerId"]));
+                // Generate Token To Send To Customer
+                string Token = UserAccount.HashSHA1(customer.Email + customer.UserGuid);
 
-            return View();
+                // Send Customer Email
+
+
+                // Redirect to Success Page
+                ViewBag.Company = customer.CompanyName;
+                return View("ForgotPasswordSent");
+            }
         }
     }
 }

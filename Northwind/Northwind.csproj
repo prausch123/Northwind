@@ -246,6 +246,7 @@
     <Content Include="Views\Customer\Orders.cshtml" />
     <Content Include="Views\Customer\Account.cshtml" />
     <Content Include="Views\Customer\ForgotPassword.cshtml" />
+    <Content Include="Views\Customer\ForgotPasswordSent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
