@@ -181,7 +181,18 @@ namespace Northwind.Controllers
 
         public ActionResult ForgotPassword()
         {
-            
+            using (NORTHWNDEntities db = new NORTHWNDEntities())
+            {
+                ViewBag.CustomerID = new SelectList(db.Customers.OrderBy(c => c.CompanyName), "CustomerID", "CompanyName").ToList();
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword([Bind(Include = "CustomerId")] CustomerPasswordForgotten customerPasswordForgotten, FormCollection Form, string ReturnUrl)
+        {
+
             return View();
         }
     }
