@@ -199,10 +199,16 @@ namespace Northwind.Controllers
                 string Token = UserAccount.HashSHA1(customer.Email + customer.UserGuid);
 
                 // Send Customer Email
-
+                Gmailer gmailer = new Gmailer();
+                gmailer.ToEmail = customer.Email;
+                gmailer.Subject = "Subject";
+                gmailer.Body = "Test";
+                gmailer.IsHtml = true;
+                gmailer.Send();
 
                 // Redirect to Success Page
                 ViewBag.Company = customer.CompanyName;
+                ViewBag.Email = gmailer.ToEmail;
                 return View("ForgotPasswordSent");
             }
         }
