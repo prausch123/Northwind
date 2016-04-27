@@ -204,7 +204,10 @@ namespace Northwind.Controllers
                 Gmailer gmailer = new Gmailer();
                 gmailer.ToEmail = customer.Email;
                 gmailer.Subject = "Subject";
-                gmailer.Body = "Token is: " + Token + " ";
+                gmailer.Body = "<p>Hello " +customer.ContactName+ ",</p>"+
+"<p>Somebody recently asked to reset your Northwind Store password.</p>"+
+"<p><a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/ChangePassword?token=" + Token + "'>Click here to change your password.</a></p>" +
+"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/Disavow?"+ Token +"'>let us know</a>.</p>";
                 gmailer.IsHtml = true;
                 gmailer.Send();
 
