@@ -133,6 +133,7 @@
     <Compile Include="Models\Customer.cs">
       <DependentUpon>NorthwindModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustomerChangePassword.cs" />
     <Compile Include="Models\CustomerEdit.cs" />
     <Compile Include="Models\CustomerPasswordForgotten.cs" />
     <Compile Include="Models\CustomerRegister.cs" />
@@ -249,6 +250,7 @@
     <Content Include="Views\Customer\ForgotPassword.cshtml" />
     <Content Include="Views\Customer\ForgotPasswordSent.cshtml" />
     <Content Include="Views\Customer\ChangePassword.cshtml" />
+    <Content Include="Views\Customer\ForgotPasswordSuccess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

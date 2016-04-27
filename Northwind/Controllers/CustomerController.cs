@@ -197,7 +197,8 @@ namespace Northwind.Controllers
                 // Fetch Customer By ID
                 Customer customer = db.Customers.Find(int.Parse(Form["CustomerId"]));
                 // Generate Token To Send To Customer
-                string Token = UserAccount.HashSHA1(customer.Email + customer.UserGuid);
+                DateTime now = DateTime.Now;
+                string Token = UserAccount.HashSHA1(now.ToString() + customer.UserGuid);
 
                 // Send Customer Email
                 Gmailer gmailer = new Gmailer();
@@ -210,8 +211,8 @@ namespace Northwind.Controllers
                 // Add Token to the Database
                 PasswordRequest pw = new PasswordRequest();
                 pw.CustomerID = customer.CustomerID;
+                pw.TimeCreated = now;
                 pw.Token = Token;
-                pw.TimeCreated = DateTime.Now;
                 db.PasswordRequests.Add(pw);
                 db.SaveChanges();
 
@@ -228,20 +229,67 @@ namespace Northwind.Controllers
         {
             using (NORTHWNDEntities db = new NORTHWNDEntities())
             {
+                // Find 
                 PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
-
-                // Check if it's validw
                 if (pw == null)
                 {
-                    ViewBag.Token = Token;
-                    ViewBag.Error = "Incorrect or Non Existant Password Reset Request";
+                    ViewBag.Error = "Incorrect or Expired Password Reset Request";
                     return View();
                 }
 
-                ViewBag.ID = pw.CustomerID;
+                // Compare two times
+                DateTime expires = DateTime.Parse(pw.TimeCreated.ToString()).AddDays(1);
+                DateTime now = DateTime.Now;
+                
+                // Check if it's valid
+                if (now > expires)
+                {
+                    ViewBag.Error = "Incorrect or Expired Password Reset Request";
+                    return View();
+                }
+
+                ViewBag.Token = pw.Token;
             }
 
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection Form, string ReturnUrl) {
+
+            using (NORTHWNDEntities db = new NORTHWNDEntities())
+            {
+                string Token = Form["Token"];
+                string Password = Form["password"];
+                string PasswordVerify = Form["password-verify"];
+
+                if (Password != "" && PasswordVerify != "" && Password.Equals(PasswordVerify))
+                {
+                    // Get Password Request
+                    PasswordRequest pw = db.PasswordRequests.Where(p => p.Token == Token).FirstOrDefault();
+                    Customer c = db.Customers.Find(pw.CustomerID);
+
+                    // Update Customer Password
+                    c.Password = UserAccount.HashSHA1(Password + c.UserGuid);
+
+                    // Delete Password Reset Request
+                    db.PasswordRequests.Remove(pw);
+
+                    // Update DB
+                    db.SaveChanges();
+
+                    // Forward to Success Page
+                    return View("ForgotPasswordSuccess");
+                }
+                else
+                {
+                    TempData["Error"] = "Password Doesn't Match Or Is Invalid";
+                    return RedirectToAction("ChangePassword", "Customer", new { Token = Token });
+                }
+
+
+            }
+
         }
     }
 }
