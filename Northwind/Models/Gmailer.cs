@@ -28,6 +28,10 @@ namespace Northwind.Models
 
     public void Send()
     {
+        GmailUsername = "NorthWindPass@gmail.com";
+        GmailPassword = "northwnd";
+
+
         GmailHost = "smtp.gmail.com";
         GmailPort = 25; // Gmail can use ports 25, 465 & 587; but must be 25 for medium trust environment.
         GmailSSL = true;
@@ -38,9 +42,9 @@ namespace Northwind.Models
         smtp.EnableSsl = GmailSSL;
         smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
         smtp.UseDefaultCredentials = false;
-        smtp.Credentials = new NetworkCredential("NorthWindPass@gmail.com","northwnd" );
+        smtp.Credentials = new NetworkCredential(GmailUsername, GmailPassword);
 
-        using (var message = new MailMessage("NorthWindPass@gmail.com", ToEmail))
+        using (var message = new MailMessage(GmailUsername, ToEmail))
         {
             message.Subject = Subject;
             message.Body = Body;
