@@ -320,6 +320,7 @@
       <End Role="Product" EntitySet="Products" />
       <End Role="Discount" EntitySet="Discounts" />
     </AssociationSet>
+    <EntitySet Name="PasswordRequests" EntityType="NORTHWNDModel.PasswordRequest" />
   </EntityContainer>
   <EntityType Name="Discount">
     <Key>
@@ -347,4 +348,13 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <EntityType Name="PasswordRequest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <Property Name="Token" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="TimeCreated" Type="DateTime" Precision="3" />
+  </EntityType>
 </Schema>

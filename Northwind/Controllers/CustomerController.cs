@@ -181,8 +181,36 @@ namespace Northwind.Controllers
 
         public ActionResult ForgotPassword()
         {
-            
-            return View();
+            using (NORTHWNDEntities db = new NORTHWNDEntities())
+            {
+                ViewBag.CustomerID = new SelectList(db.Customers.OrderBy(c => c.CompanyName), "CustomerID", "CompanyName").ToList();
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(FormCollection Form, string ReturnUrl)
+        {
+            using(NORTHWNDEntities db = new NORTHWNDEntities()){
+                // Fetch Customer By ID
+                Customer customer = db.Customers.Find(int.Parse(Form["CustomerId"]));
+                // Generate Token To Send To Customer
+                string Token = UserAccount.HashSHA1(customer.Email + customer.UserGuid);
+
+                // Send Customer Email
+                Gmailer gmailer = new Gmailer();
+                gmailer.ToEmail = customer.Email;
+                gmailer.Subject = "Subject";
+                gmailer.Body = "Test";
+                gmailer.IsHtml = true;
+                gmailer.Send();
+
+                // Redirect to Success Page
+                ViewBag.Company = customer.CompanyName;
+                ViewBag.Email = gmailer.ToEmail;
+                return View("ForgotPasswordSent");
+            }
         }
     }
 }

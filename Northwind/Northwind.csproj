@@ -134,6 +134,7 @@
       <DependentUpon>NorthwindModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerEdit.cs" />
+    <Compile Include="Models\CustomerPasswordForgotten.cs" />
     <Compile Include="Models\CustomerRegister.cs" />
     <Compile Include="Models\CustomerSignIn.cs" />
     <Compile Include="Models\Discount.cs">
@@ -142,6 +143,7 @@
     <Compile Include="Models\Employee.cs">
       <DependentUpon>NorthwindModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Gmailer.cs" />
     <Compile Include="Models\NorthwindModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -245,6 +247,7 @@
     <Content Include="Views\Customer\Orders.cshtml" />
     <Content Include="Views\Customer\Account.cshtml" />
     <Content Include="Views\Customer\ForgotPassword.cshtml" />
+    <Content Include="Views\Customer\ForgotPasswordSent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
