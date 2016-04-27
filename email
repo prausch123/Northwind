@@ -1,4 +1,4 @@
-Hello {ContactName},
-Somebody recently asked to reset your Northwind Store password.
-<a href="https://{northwind application server}/recover/code?u={guid}&n={secret code}">Click here to change your password.</a>
-If you didn't request a new password, <a href="https://{northwind application server}/recover/disavow?id={guid}&n={secret code}">let us know</a>.
+<p>Hello {ContactName},</p>
+<p>Somebody recently asked to reset your Northwind Store password.</p>
+<p><a href="https://{northwind application server}/recover/code?u={guid}&n={secret code}">Click here to change your password.</a></p>
+<p>If you didn't request a new password, <a href="https://{northwind application server}/recover/disavow?id={guid}&n={secret code}">let us know</a>.</p>
