@@ -208,3 +208,6 @@ U:\prausch\Downloads\Lesson28_start\Northwind\bin\Newtonsoft.Json.xml
 U:\prausch\Downloads\Lesson28_start\Northwind\obj\Debug\Northwind.csprojResolveAssemblyReference.cache
 U:\prausch\Downloads\Lesson28_start\Northwind\obj\Debug\Northwind.dll
 U:\prausch\Downloads\Lesson28_start\Northwind\obj\Debug\Northwind.pdb
+U:\nparbs\Documents\NorthWind\Northwind\obj\Debug\Northwind.csprojResolveAssemblyReference.cache
+U:\nparbs\Documents\NorthWind\Northwind\obj\Debug\Northwind.dll
+U:\nparbs\Documents\NorthWind\Northwind\obj\Debug\Northwind.pdb
