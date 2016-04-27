@@ -193,6 +193,7 @@ namespace Northwind.Controllers
         public ActionResult ForgotPassword(FormCollection Form, string ReturnUrl)
         {
             using(NORTHWNDEntities db = new NORTHWNDEntities()){
+
                 // Fetch Customer By ID
                 Customer customer = db.Customers.Find(int.Parse(Form["CustomerId"]));
                 // Generate Token To Send To Customer
@@ -202,15 +203,45 @@ namespace Northwind.Controllers
                 Gmailer gmailer = new Gmailer();
                 gmailer.ToEmail = customer.Email;
                 gmailer.Subject = "Subject";
-                gmailer.Body = "Test";
+                gmailer.Body = "Token is: " + Token + " ";
                 gmailer.IsHtml = true;
                 gmailer.Send();
+
+                // Add Token to the Database
+                PasswordRequest pw = new PasswordRequest();
+                pw.CustomerID = customer.CustomerID;
+                pw.Token = Token;
+                pw.TimeCreated = DateTime.Now;
+                db.PasswordRequests.Add(pw);
+                db.SaveChanges();
+
 
                 // Redirect to Success Page
                 ViewBag.Company = customer.CompanyName;
                 ViewBag.Email = gmailer.ToEmail;
                 return View("ForgotPasswordSent");
             }
+        }
+
+        [HttpGet]
+        public ActionResult ChangePassword(string Token)
+        {
+            using (NORTHWNDEntities db = new NORTHWNDEntities())
+            {
+                PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
+
+                // Check if it's validw
+                if (pw == null)
+                {
+                    ViewBag.Token = Token;
+                    ViewBag.Error = "Incorrect or Non Existant Password Reset Request";
+                    return View();
+                }
+
+                ViewBag.ID = pw.CustomerID;
+            }
+
+            return View();
         }
     }
 }

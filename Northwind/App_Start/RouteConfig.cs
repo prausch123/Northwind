@@ -18,6 +18,12 @@ namespace Northwind
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+                name: "ChangePassword",
+                url: "Customer/ChangePassword/{Token}",
+                defaults: new { controller = "Customer", action = "ChangePassword" }
+            );
         }
     }
 }
