@@ -72,11 +72,13 @@ namespace Northwind.Controllers
         // POST: Customer/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register([Bind(Include = "Email,Password,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] Customer customer)
+        public ActionResult Register([Bind(Include = "Email,Password,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] CustomerRegister customerRegister)
         {
             // Add new customer to database
             using (NORTHWNDEntities db = new NORTHWNDEntities())
             {
+                //create Customer from the CustomerRegister
+                Customer customer = customerRegister.MapToCustomer();
                 // first, make sure the CompanyName is unique
                 if (db.Customers.Any(c => c.CompanyName == customer.CompanyName))
                 {
