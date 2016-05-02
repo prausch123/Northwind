@@ -203,11 +203,11 @@ namespace Northwind.Controllers
                 // Send Customer Email
                 Gmailer gmailer = new Gmailer();
                 gmailer.ToEmail = customer.Email;
-                gmailer.Subject = "Subject";
+                gmailer.Subject = "Northwind Password Reset";
                 gmailer.Body = "<p>Hello " +customer.ContactName+ ",</p>"+
 "<p>Somebody recently asked to reset your Northwind Store password.</p>"+
 "<p><a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/ChangePassword?token=" + Token + "'>Click here to change your password.</a></p>" +
-"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/Disavow?"+ Token +"'>let us know</a>.</p>";
+"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/UnauthorizedForgetPasswordRequest?" + Token + "'>let us know</a>.</p>";
                 gmailer.IsHtml = true;
                 gmailer.Send();
 
@@ -289,10 +289,25 @@ namespace Northwind.Controllers
                     TempData["Error"] = "Password Doesn't Match Or Is Invalid";
                     return RedirectToAction("ChangePassword", "Customer", new { Token = Token });
                 }
-
-
             }
+        }
 
+        public ActionResult UnauthorizedForgetPasswordRequest(string Token)
+        {
+            using (NORTHWNDEntities db = new NORTHWNDEntities())
+            {
+                PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
+                if (pw == null)
+                {
+                    ViewBag.Error = "Incorrect or Expired Password Reset Request";
+                    return View();
+                }
+
+                db.PasswordRequests.Remove(pw);
+                db.SaveChanges();
+
+                return View();
+            }
         }
     }
 }
