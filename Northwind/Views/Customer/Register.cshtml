@@ -10,42 +10,43 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-horizontal">
             <div class="col-md-6 col-lg-5 col-lg-offset-1">
                 <div class="row">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control", placeholder = "Company Name" } })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", placeholder = "Phone" } })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Password" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Fax, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Fax, new { htmlAttributes = new { @class = "form-control", placeholder = "Fax" } })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.ContactName, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.ContactName, new { htmlAttributes = new { @class = "form-control", placeholder = "Contact Name" } })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ContactName, "Contact Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ContactName, new { htmlAttributes = new { @class = "form-control", placeholder = "Contact Name" } })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.ContactTitle, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.ContactTitle, new { htmlAttributes = new { @class = "form-control", placeholder = "Contact Title" } })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ContactTitle, "Contact Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ContactTitle, new { htmlAttributes = new { @class = "form-control", placeholder = "Contact Title" } })
+                            </div>
                         </div>
                     </div>
-                </div>
             </div>
             <div class="col-md-6 col-lg-5">
                 <div class="row">
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                        @Html.LabelFor(model => model.Address, "Street Address", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
                             @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", placeholder = "Street Address" } })
                         </div>
@@ -66,7 +67,7 @@
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.PostalCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                        @Html.LabelFor(model => model.PostalCode, "Postal Code", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
                             @Html.EditorFor(model => model.PostalCode, new { htmlAttributes = new { @class = "form-control", placeholder = "Postal Code" } })
                         </div>
@@ -82,21 +83,21 @@
             </div>
 
             <div class="col-md-8 col-md-offset-3">
+
                 <div class="row well">
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", placeholder = "Phone" } })
+                            @Html.LabelFor(model => model.CompanyName, "Company Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control", placeholder = "Company Name" } })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Fax, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.Fax, new { htmlAttributes = new { @class = "form-control", placeholder = "Fax" } })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Password" })
+                            </div>
                         </div>
-                    </div>
-
                     <div class="form-group">
                         @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
@@ -106,6 +107,7 @@
 
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">
+                            <p>Password, Company Name, and Email are all required.</p>
                             <input type="submit" value="Save" class="btn btn-default" />
                         </div>
                     </div>
