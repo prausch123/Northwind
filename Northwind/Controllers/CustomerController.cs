@@ -217,6 +217,9 @@ namespace Northwind.Controllers
                 gmailer.IsHtml = true;
                 gmailer.Send();
 
+                //Remove all old Tokens from the same user
+                db.PasswordRequests.RemoveRange(db.PasswordRequests.Where(pr => pr.CustomerID == customer.CustomerID));
+
                 // Add Token to the Database
                 PasswordRequest pw = new PasswordRequest();
                 pw.CustomerID = customer.CustomerID;
@@ -233,19 +236,26 @@ namespace Northwind.Controllers
             }
         }
 
+        private void RemoveOldPasswordRequests()
+        {
+            using (NORTHWNDEntities db = new NORTHWNDEntities())
+            {
+                //Setting oldest possible TimeCreated for valid requests
+                DateTime OneDayAgo = DateTime.Now.AddDays(-1);
+                //remove requests more than a day old
+                db.PasswordRequests.RemoveRange(db.PasswordRequests.Where(pr => pr.TimeCreated < OneDayAgo));
+                db.SaveChanges();
+            }
+            return;
+        }
+
         //landing after clicking link from email
         [HttpGet]
         public ActionResult ChangePassword(string Token)
         {
             using (NORTHWNDEntities db = new NORTHWNDEntities())
             {
-                //Setting oldest possible TimeCreated for valid requests
-                DateTime OneDayAgo = DateTime.Now.AddDays(-1);
-                //Selecting all older requests
-                var OldRequests = db.PasswordRequests.Where(pr => pr.TimeCreated < OneDayAgo);
-                //removing selected
-                db.PasswordRequests.RemoveRange(OldRequests);
-                db.SaveChanges();
+                RemoveOldPasswordRequests();
 
                 // Find request by token (linked to from email)
                 PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
