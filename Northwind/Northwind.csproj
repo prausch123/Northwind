@@ -252,6 +252,7 @@
     <Content Include="Views\Customer\ChangePassword.cshtml" />
     <Content Include="Views\Customer\ForgotPasswordSuccess.cshtml" />
     <Content Include="Views\Customer\UnauthorizedForgetPasswordRequest.cshtml" />
+    <Content Include="Views\Customer\LoggedInChangePass.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

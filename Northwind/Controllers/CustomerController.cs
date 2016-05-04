@@ -287,6 +287,15 @@ namespace Northwind.Controllers
                     // Update DB
                     db.SaveChanges();
 
+                    // Send Customer Email
+                    Gmailer gmailer = new Gmailer();
+                    gmailer.ToEmail = c.Email;
+                    gmailer.Subject = "Password Reset Successful";
+                    gmailer.Body = "<p>Hello " + c.ContactName + ",</p>" +
+                    "<p>Your password has been reset successfully</p>";
+                    gmailer.IsHtml = true;
+                    gmailer.Send();
+
                     // Forward to Success Page
                     return View("ForgotPasswordSuccess");
                 }
