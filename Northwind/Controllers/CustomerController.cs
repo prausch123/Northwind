@@ -201,15 +201,19 @@ namespace Northwind.Controllers
                 // Generate Token To Send To Customer
                 DateTime now = DateTime.Now;
                 string Token = UserAccount.HashSHA1(now.ToString() + customer.UserGuid);
+                //Get domain name authority (including port number, if required) that this app is running on
+                String Authority = Request.Url.GetLeftPart(UriPartial.Authority);
 
                 // Send Customer Email
                 Gmailer gmailer = new Gmailer();
                 gmailer.ToEmail = customer.Email;
                 gmailer.Subject = "Northwind Password Reset";
-                gmailer.Body = "<p>Hello " +customer.ContactName+ ",</p>"+
-"<p>Somebody recently asked to reset your Northwind Store password.</p>"+
-"<p><a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/ChangePassword?token=" + Token + "'>Click here to change your password.</a></p>" +
-"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/UnauthorizedForgetPasswordRequest?" + Token + "'>let us know</a>.</p>";
+                gmailer.Body = "<p>Hello " 
+                + customer.ContactName + ",</p>" + "<p>Somebody recently asked to reset your Northwind Store password.</p>" + "<p><a href='" 
+                + Authority + "/Customer/ChangePassword?token=" 
+                + Token + "'>Click here to change your password.</a></p>" + "<p>If you didn't request a new password, <a href='" 
+                + Authority + "/Customer/UnauthorizedForgetPasswordRequest?" 
+                + Token + "'>let us know</a>.</p>";
                 gmailer.IsHtml = true;
                 gmailer.Send();
 
@@ -242,9 +246,21 @@ namespace Northwind.Controllers
                     return View();
                 }
 
+                //removing all outdated requests
+                DateTime OneDayAgo = DateTime.Now.AddDays(-1);
+                //selecting old requests
+                var OldRequests =
+                    from pr in db.PasswordRequests
+                    where pr.TimeCreated < OneDayAgo
+                    select pr;
+                //removing selected
+                db.PasswordRequests.RemoveRange(OldRequests);
+                db.SaveChanges();
+
                 // Compare two times
                 DateTime expires = DateTime.Parse(pw.TimeCreated.ToString()).AddDays(1);
                 DateTime now = DateTime.Now;
+
                 
                 // Check if it's valid
                 if (now > expires)
@@ -276,6 +292,8 @@ namespace Northwind.Controllers
 
                     // Update Customer Password
                     c.Password = UserAccount.HashSHA1(Password + c.UserGuid);
+
+                    //db.PasswordRequests.Remove(db.PasswordRequests.Where(f => f.TimeCreated <= DateTime ));
 
                     // Delete Password Reset Request
                     db.PasswordRequests.Remove(pw);
