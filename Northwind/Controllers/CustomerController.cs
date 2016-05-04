@@ -233,37 +233,23 @@ namespace Northwind.Controllers
             }
         }
 
+        //landing after clicking link from email
         [HttpGet]
         public ActionResult ChangePassword(string Token)
         {
             using (NORTHWNDEntities db = new NORTHWNDEntities())
             {
-                // Find 
-                PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
-                if (pw == null)
-                {
-                    ViewBag.Error = "Incorrect or Expired Password Reset Request";
-                    return View();
-                }
-
-                //removing all outdated requests
+                //Setting oldest possible TimeCreated for valid requests
                 DateTime OneDayAgo = DateTime.Now.AddDays(-1);
-                //selecting old requests
-                var OldRequests =
-                    from pr in db.PasswordRequests
-                    where pr.TimeCreated < OneDayAgo
-                    select pr;
+                //Selecting all older requests
+                var OldRequests = db.PasswordRequests.Where(pr => pr.TimeCreated < OneDayAgo);
                 //removing selected
                 db.PasswordRequests.RemoveRange(OldRequests);
                 db.SaveChanges();
 
-                // Compare two times
-                DateTime expires = DateTime.Parse(pw.TimeCreated.ToString()).AddDays(1);
-                DateTime now = DateTime.Now;
-
-                
-                // Check if it's valid
-                if (now > expires)
+                // Find request by token (linked to from email)
+                PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
+                if (pw == null)
                 {
                     ViewBag.Error = "Incorrect or Expired Password Reset Request";
                     return View();
