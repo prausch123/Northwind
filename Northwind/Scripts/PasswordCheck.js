@@ -4,6 +4,7 @@
     $("#capital").css('color', 'red');
     $("#number").css('color', 'red');
     $("#match").css('color', 'red');
+    $("#btnChange").prop("disabled", true);
 
     $("#password").keyup(function () {
         checkAndUpdate();
@@ -57,6 +58,12 @@ function checkAndUpdate() {
         match = false;
         $("#match").css('color', 'red');
     }
+
+    if (chars && capital && number && match) {
+        $("#btnChange").prop("disabled", false);
+    } else {
+        $("#btnChange").prop("disabled", true);
+    }
 }
 
 function checkChars(text) {
@@ -69,21 +76,11 @@ function checkChars(text) {
 }
 
 function checkCapital(text) {
-    var regex = ".*[A-Z]+.*"
-
-    if (regex.text(text)) {
-        return true;
-    } else {
-        return false;
-    }
+    return text.match(/([A-Z])/);
 }
 
 function checkNumber(text) {
-    if (/\d/.test(text)) {
-        return true;
-    } else {
-        return false;
-    }
+    return text.match(/([0-9])/);
 }
 
 function checkMatch(text1, text2) {
