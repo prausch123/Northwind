@@ -86,6 +86,30 @@ namespace Northwind.Controllers
                     ModelState.AddModelError("CompanyName", "Duplicate Company Name");
                     return View();
                 }
+                bool noSave = false;
+                if (customer.Email == "" || customer.Email == null)
+                {
+                    ModelState.AddModelError("Email", "Email is required");
+                    noSave = true;
+                }
+                if (customer.CompanyName == "" || customer.CompanyName == null)
+                {
+                    ModelState.AddModelError("CompanyName", "Company Name is required");
+                    noSave = true;
+                }
+                if (customer.Password == "" || customer.Password == null)
+                {
+                    ModelState.AddModelError("Password", "Password is required");
+                    return View();
+                }
+                if (customer.Password.Length < 4)
+                {
+                    ModelState.AddModelError("Password", "Password must contain more than 4 characters");
+                }
+                if (noSave)
+                {
+                    return View();
+                }
                 // Generate guid for this customer
                 customer.UserGuid = System.Guid.NewGuid();
                 // Hash & Salt the customer Password using SHA-1 algorithm
