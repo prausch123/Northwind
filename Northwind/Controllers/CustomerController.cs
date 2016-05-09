@@ -72,11 +72,13 @@ namespace Northwind.Controllers
         // POST: Customer/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register([Bind(Include = "Email,Password,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] Customer customer)
+        public ActionResult Register([Bind(Include = "Email,Password,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] CustomerRegister customerRegister)
         {
             // Add new customer to database
             using (NORTHWNDEntities db = new NORTHWNDEntities())
             {
+                //create Customer from the CustomerRegister
+                Customer customer = customerRegister.MapToCustomer();
                 // first, make sure the CompanyName is unique
                 if (db.Customers.Any(c => c.CompanyName == customer.CompanyName))
                 {
@@ -199,6 +201,8 @@ namespace Northwind.Controllers
                 // Generate Token To Send To Customer
                 DateTime now = DateTime.Now;
                 string Token = UserAccount.HashSHA1(now.ToString() + customer.UserGuid);
+                //Get domain name authority (including port number, if required) that this app is running on
+                String Authority = Request.Url.GetLeftPart(UriPartial.Authority);
 
                 // Send Customer Email
                 Gmailer gmailer = new Gmailer();
@@ -207,9 +211,12 @@ namespace Northwind.Controllers
                 gmailer.Body = "<p>Hello " +customer.ContactName+ ",</p>"+
 "<p>Somebody recently asked to reset your Northwind Store password.</p>"+
 "<p><a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/ChangePassword?token=" + Token + "'>Click here to change your password.</a></p>" +
-"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/UnauthorizedForgetPasswordRequest?token=" + Token + "'>let us know</a>.</p>";
+"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/UnauthorizedForgetPasswordRequest?" + Token + "'>let us know</a>.</p>";
                 gmailer.IsHtml = true;
                 gmailer.Send();
+
+                //Remove all old Tokens from the same user
+                db.PasswordRequests.RemoveRange(db.PasswordRequests.Where(pr => pr.CustomerID == customer.CustomerID));
 
                 // Add Token to the Database
                 PasswordRequest pw = new PasswordRequest();
@@ -227,12 +234,28 @@ namespace Northwind.Controllers
             }
         }
 
+        private void RemoveOldPasswordRequests()
+        {
+            using (NORTHWNDEntities db = new NORTHWNDEntities())
+            {
+                //Setting oldest possible TimeCreated for valid requests
+                DateTime OneDayAgo = DateTime.Now.AddDays(-1);
+                //remove requests more than a day old
+                db.PasswordRequests.RemoveRange(db.PasswordRequests.Where(pr => pr.TimeCreated < OneDayAgo));
+                db.SaveChanges();
+            }
+            return;
+        }
+
+        //landing after clicking link from email
         [HttpGet]
         public ActionResult ChangePassword(string Token)
         {
             using (NORTHWNDEntities db = new NORTHWNDEntities())
             {
-                // Find 
+                RemoveOldPasswordRequests();
+
+                // Find request by token (linked to from email)
                 PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
                 if (pw == null)
                 {
@@ -248,12 +271,7 @@ namespace Northwind.Controllers
                 if (now > expires)
                 {
                     ViewBag.Error = "Incorrect or Expired Password Reset Request";
-
-                    db.PasswordRequests.Remove(pw);
-                    db.SaveChanges();
-
                     return View();
-
                 }
 
                 ViewBag.Token = pw.Token;
@@ -280,11 +298,22 @@ namespace Northwind.Controllers
                     // Update Customer Password
                     c.Password = UserAccount.HashSHA1(Password + c.UserGuid);
 
+                    //db.PasswordRequests.Remove(db.PasswordRequests.Where(f => f.TimeCreated <= DateTime ));
+
                     // Delete Password Reset Request
                     db.PasswordRequests.Remove(pw);
 
                     // Update DB
                     db.SaveChanges();
+
+                    // Send Customer Email
+                    Gmailer gmailer = new Gmailer();
+                    gmailer.ToEmail = c.Email;
+                    gmailer.Subject = "Password Reset Successful";
+                    gmailer.Body = "<p>Hello " + c.ContactName + ",</p>" +
+                    "<p>Your password has been reset successfully</p>";
+                    gmailer.IsHtml = true;
+                    gmailer.Send();
 
                     // Forward to Success Page
                     return View("ForgotPasswordSuccess");
