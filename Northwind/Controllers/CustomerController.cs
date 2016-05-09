@@ -208,12 +208,10 @@ namespace Northwind.Controllers
                 Gmailer gmailer = new Gmailer();
                 gmailer.ToEmail = customer.Email;
                 gmailer.Subject = "Northwind Password Reset";
-                gmailer.Body = "<p>Hello " 
-                + customer.ContactName + ",</p>" + "<p>Somebody recently asked to reset your Northwind Store password.</p>" + "<p><a href='" 
-                + Authority + "/Customer/ChangePassword?token=" 
-                + Token + "'>Click here to change your password.</a></p>" + "<p>If you didn't request a new password, <a href='" 
-                + Authority + "/Customer/UnauthorizedForgetPasswordRequest?" 
-                + Token + "'>let us know</a>.</p>";
+                gmailer.Body = "<p>Hello " +customer.ContactName+ ",</p>"+
+"<p>Somebody recently asked to reset your Northwind Store password.</p>"+
+"<p><a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/ChangePassword?token=" + Token + "'>Click here to change your password.</a></p>" +
+"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/UnauthorizedForgetPasswordRequest?" + Token + "'>let us know</a>.</p>";
                 gmailer.IsHtml = true;
                 gmailer.Send();
 
@@ -260,6 +258,17 @@ namespace Northwind.Controllers
                 // Find request by token (linked to from email)
                 PasswordRequest pw = db.PasswordRequests.Where(t => t.Token == Token).FirstOrDefault();
                 if (pw == null)
+                {
+                    ViewBag.Error = "Incorrect or Expired Password Reset Request";
+                    return View();
+                }
+
+                // Compare two times
+                DateTime expires = DateTime.Parse(pw.TimeCreated.ToString()).AddDays(1);
+                DateTime now = DateTime.Now;
+                
+                // Check if it's valid
+                if (now > expires)
                 {
                     ViewBag.Error = "Incorrect or Expired Password Reset Request";
                     return View();
