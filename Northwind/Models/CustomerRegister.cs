@@ -40,6 +40,7 @@ namespace Northwind.Models
         [StringLength(24)]
         public string Fax { get; set; }
         [EmailAddress]
+        [Required]
         [StringLength(50)]
         public string Email { get; set; }
 
