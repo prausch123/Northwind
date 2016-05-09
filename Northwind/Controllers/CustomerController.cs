@@ -207,7 +207,7 @@ namespace Northwind.Controllers
                 gmailer.Body = "<p>Hello " +customer.ContactName+ ",</p>"+
 "<p>Somebody recently asked to reset your Northwind Store password.</p>"+
 "<p><a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/ChangePassword?token=" + Token + "'>Click here to change your password.</a></p>" +
-"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/UnauthorizedForgetPasswordRequest?" + Token + "'>let us know</a>.</p>";
+"<p>If you didn't request a new password, <a href='" + Request.Url.GetLeftPart(UriPartial.Authority) + "/Customer/UnauthorizedForgetPasswordRequest?token=" + Token + "'>let us know</a>.</p>";
                 gmailer.IsHtml = true;
                 gmailer.Send();
 
@@ -248,7 +248,12 @@ namespace Northwind.Controllers
                 if (now > expires)
                 {
                     ViewBag.Error = "Incorrect or Expired Password Reset Request";
+
+                    db.PasswordRequests.Remove(pw);
+                    db.SaveChanges();
+
                     return View();
+
                 }
 
                 ViewBag.Token = pw.Token;
